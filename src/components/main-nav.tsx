@@ -8,15 +8,34 @@ import {
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
 import { LayoutDashboard, UserCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { auth } from '@/lib/firebase';
+import type { User } from 'firebase/auth';
 
-const links = [
+const allLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/account', label: 'Account', icon: UserCircle },
+  { href: '/account', label: 'Account', icon: UserCircle, auth: true },
 ];
 
 export function MainNav() {
   const pathname = usePathname();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const links = allLinks.filter(link => !link.auth || (link.auth && user));
+
+  if (loading) {
+    return <SidebarMenu />;
+  }
+  
   return (
     <SidebarMenu>
       {links.map((link) => (

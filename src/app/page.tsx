@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Video, Bot } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signInWithGoogle } from '@/lib/firebase';
 import { signInWithGoogleAction } from './actions';
@@ -13,13 +14,10 @@ export default function LoginPage() {
     try {
       const user = await signInWithGoogle();
       if (user) {
-        // After successful sign-in on the client, trigger the server action
-        // to handle session logic and redirection.
         await signInWithGoogleAction();
       }
     } catch (error) {
       console.error('Google Sign-in error:', error);
-      // Handle error appropriately in the UI
     }
   };
 
@@ -54,6 +52,9 @@ export default function LoginPage() {
               <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.85 3.18-1.73 4.1-1.02 1.02-2.3 1.62-3.99 1.62-4.97 0-9-4.03-9-9s4.03-9 9-9c2.69 0 4.75 1.04 6.3 2.5l2.5-2.5C19.16 1.14 16.14 0 12.48 0 5.6 0 0 5.6 0 12.48s5.6 12.48 12.48 12.48c3.47 0 6.3-1.22 8.36-3.37 2.13-2.2 2.7-5.35 2.7-8.54 0-.6-.05-1.18-.16-1.74z"></path>
             </svg>
             Sign in with Google
+          </Button>
+           <Button asChild variant="link" size="lg" className="w-full max-w-xs">
+            <Link href="/dashboard">Continue as Guest</Link>
           </Button>
           <p className="text-xs text-muted-foreground">
             By signing in, you agree to our Terms of Service.
