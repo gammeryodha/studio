@@ -3,14 +3,23 @@
 import { Button } from '@/components/ui/button';
 import { Video, Bot } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { signInWithGoogle } from '@/lib/firebase';
 
 export default function LoginPage() {
   const router = useRouter();
 
-  const handleLogin = () => {
-    // In a real app, this would involve a call to a Google Sign-In API.
-    // For this prototype, we'll just navigate to the dashboard.
-    router.push('/dashboard');
+  const handleLogin = async () => {
+    try {
+      const user = await signInWithGoogle();
+      if (user) {
+        // In a real app, this would involve a call to a Google Sign-In API.
+        // For this prototype, we'll just navigate to the dashboard.
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('Google Sign-in error:', error);
+      // Handle error appropriately in the UI
+    }
   };
 
   return (
