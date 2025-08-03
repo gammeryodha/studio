@@ -5,19 +5,26 @@ import { Video, Bot } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signInWithGoogle } from '@/lib/firebase';
-import { signInWithGoogleAction } from './actions';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleLogin = async () => {
     try {
       const user = await signInWithGoogle();
       if (user) {
-        await signInWithGoogleAction();
+        toast({ title: 'Login Successful', description: `Welcome back, ${user.displayName}!` });
+        router.push('/dashboard');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Google Sign-in error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: error.message || 'An unexpected error occurred during sign-in.',
+      });
     }
   };
 

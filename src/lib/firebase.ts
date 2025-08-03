@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 const firebaseConfig = {
   projectId: 'neonvid-balic',
@@ -20,12 +20,21 @@ const provider = new GoogleAuthProvider();
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    return user;
+    return result.user;
   } catch (error) {
     console.error('Error during Google sign-in:', error);
     throw error;
   }
 };
+
+export const signOutGoogle = async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error('Error during sign-out:', error);
+    throw error;
+  }
+};
+
 
 export { app, auth, provider };

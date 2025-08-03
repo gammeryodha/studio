@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import type { User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, signOutGoogle } from '@/lib/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,9 +15,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export function UserNav() {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -25,6 +27,11 @@ export function UserNav() {
     });
     return () => unsubscribe();
   }, []);
+
+  const handleLogout = async () => {
+    await signOutGoogle();
+    router.push('/');
+  };
 
   if (!user) {
     return (
@@ -81,8 +88,8 @@ export function UserNav() {
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/">Log out</Link>
+        <DropdownMenuItem onClick={handleLogout}>
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

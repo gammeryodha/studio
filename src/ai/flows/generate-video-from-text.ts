@@ -21,6 +21,11 @@ const GenerateVideoOutputSchema = z.object({
 export type GenerateVideoOutput = z.infer<typeof GenerateVideoOutputSchema>;
 
 export async function generateVideoFromText(input: GenerateVideoInput): Promise<GenerateVideoOutput> {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error(
+      'The environment variable `GEMINI_API_KEY` was not found. Please ensure that it is set in the .env file.'
+    );
+  }
   return generateVideoFromTextFlow(input);
 }
 
@@ -62,11 +67,6 @@ const generateVideoFromTextFlow = ai.defineFlow(
 
 async function downloadVideo(video: any): Promise<string> {
   const fetch = (await import('node-fetch')).default;
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error(
-      'The environment variable `GEMINI_API_KEY` was not found. Please ensure that it is set, or define it in .env'
-    );
-  }
   // Add API key before fetching the video.
   const videoDownloadResponse = await fetch(
     `${video.media!.url}&key=${process.env.GEMINI_API_KEY}`

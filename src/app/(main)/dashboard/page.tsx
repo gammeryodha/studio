@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert } from '@/components/ui/alert';
 import { Bot, Loader2, Sparkles, Wand2, Youtube } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { SuggestVideoImprovementsOutput } from '@/ai/flows/suggest-video-improvements';
