@@ -14,18 +14,18 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Bot, Loader2, Sparkles, Terminal, Wand2, Youtube } from 'lucide-react';
+import { Alert } from '@/components/ui/alert';
+import { Bot, Loader2, Sparkles, Wand2, Youtube } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { GenerateVideoOutput, SuggestVideoImprovementsOutput } from '@/ai/flows/generate-video-from-text';
+import type { SuggestVideoImprovementsOutput } from '@/ai/flows/suggest-video-improvements';
+import type { GenerateVideoOutput } from '@/ai/flows/generate-video-from-text';
 import { generateVideoAction, suggestImprovementsAction } from './actions';
 
 function SubmitButton({ children, ...props }: React.ComponentProps<typeof Button>) {
   const { pending } = useFormStatus();
   return (
     <Button {...props} type="submit" disabled={pending}>
-      {pending ? <Loader2 className="mr-2 animate-spin" /> : props.lefticon}
+      {pending ? <Loader2 className="mr-2 animate-spin" /> : <Sparkles />}
       {children}
     </Button>
   );
@@ -108,7 +108,7 @@ export default function DashboardPage() {
                 />
               </CardContent>
               <CardFooter>
-                <SubmitButton className="w-full" size="lg" lefticon={<Sparkles />}>
+                <SubmitButton className="w-full" size="lg">
                   Generate Video
                 </SubmitButton>
               </CardFooter>
@@ -150,7 +150,16 @@ export default function DashboardPage() {
         </div>
 
         <div className="space-y-6 xl:col-span-3">
-          {video ? (
+          {useFormStatus().pending && !video && (
+            <div className="flex aspect-video w-full items-center justify-center rounded-lg border-2 border-dashed">
+                <div className="text-center text-muted-foreground">
+                    <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
+                    <p className="mt-4 text-lg">Generating your video...</p>
+                    <p className="text-sm">This may take a minute. Please don't close this window.</p>
+                </div>
+            </div>
+          )}
+          {video && (
             <Card className="overflow-hidden">
                 <div className="aspect-video bg-black">
                     <video key={video.videoDataUri} src={video.videoDataUri} controls className="h-full w-full" />
@@ -180,7 +189,8 @@ export default function DashboardPage() {
                     </Button>
                 </CardFooter>
             </Card>
-          ) : (
+          )}
+           {!useFormStatus().pending && !video && (
             <div className="flex aspect-video w-full items-center justify-center rounded-lg border-2 border-dashed">
               <div className="text-center text-muted-foreground">
                 <p>Your generated video will appear here.</p>

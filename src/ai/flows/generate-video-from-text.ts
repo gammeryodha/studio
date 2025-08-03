@@ -9,8 +9,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import * as fs from 'fs';
-import {Readable} from 'stream';
 
 const GenerateVideoInputSchema = z.object({
   prompt: z.string().describe('The text prompt to use for video generation.'),
