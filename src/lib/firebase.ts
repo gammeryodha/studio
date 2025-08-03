@@ -28,4 +28,4 @@ export const signInWithGoogle = async () => {
   }
 };
 
-export { app, auth };
+export { app, auth, provider };
