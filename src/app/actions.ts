@@ -3,9 +3,8 @@
 import { redirect } from 'next/navigation';
 
 export async function signInWithGoogleAction() {
-  // This action is now primarily for server-side logic after a successful
-  // client-side login. The client will handle the redirect.
-  // We can add logic here to create a session, save user data to a DB, etc.
-  // For now, we'll just redirect as the client will already be authenticated.
+  // This is no longer used for popup-based sign-in.
+  // The client-side handles the entire flow.
+  // This could be used for other server-side auth logic in the future.
   redirect('/dashboard');
 }

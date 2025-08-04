@@ -39,4 +39,4 @@ export const signOutGoogle = async () => {
 };
 
 
-export { app, auth, provider };
+export { app, auth };
