@@ -2,7 +2,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, Auth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, Auth, User } from 'firebase/auth';
 
 const firebaseConfig = {
   projectId: 'neonvid-balic',
@@ -14,12 +14,19 @@ const firebaseConfig = {
   messagingSenderId: '167301694737',
 };
 
+
 // Initialize Firebase
-const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+let app: FirebaseApp;
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApp();
+}
+
 const auth: Auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-export const signInWithGoogle = async () => {
+export const signInWithGoogle = async (): Promise<User> => {
   try {
     const result = await signInWithPopup(auth, provider);
     return result.user;
@@ -29,7 +36,7 @@ export const signInWithGoogle = async () => {
   }
 };
 
-export const signOutGoogle = async () => {
+export const signOutGoogle = async (): Promise<void> => {
   try {
     await signOut(auth);
   } catch (error) {
