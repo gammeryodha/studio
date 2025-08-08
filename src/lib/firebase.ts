@@ -1,6 +1,5 @@
 'use client';
 
-// Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, Auth, User } from 'firebase/auth';
 
@@ -13,7 +12,6 @@ const firebaseConfig = {
   measurementId: '',
   messagingSenderId: '167301694737',
 };
-
 
 // Initialize Firebase
 let app: FirebaseApp;
@@ -44,6 +42,5 @@ export const signOutGoogle = async (): Promise<void> => {
     throw error;
   }
 };
-
 
 export { app, auth };
