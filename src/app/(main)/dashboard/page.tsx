@@ -18,7 +18,7 @@ import { Bot, Loader2, Sparkles, Wand2, Youtube } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { SuggestVideoImprovementsOutput } from '@/ai/flows/suggest-video-improvements';
 import type { GenerateVideoOutput } from '@/ai/flows/generate-video-from-text';
-import { generateVideoAction, suggestImprovementsAction } from './actions';
+import { generateVideoAction, suggestImprovementsAction, publishToYouTubeAction } from './actions';
 
 function SubmitButton({ children, ...props }: React.ComponentProps<typeof Button>) {
   const { pending } = useFormStatus();
@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const [videoMeta, setVideoMeta] = useState({ title: '', description: '', tags: '' });
   const [suggestions, setSuggestions] = useState<SuggestVideoImprovementsOutput | null>(null);
   const [isSuggesting, startSuggestionTransition] = useTransition();
+  const [isPublishing, startPublishingTransition] = useTransition();
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   const [generateState, formAction] = useFormState(generateVideoAction, {
@@ -79,6 +80,29 @@ export default function DashboardPage() {
       } else if (result.data) {
         setSuggestions(result.data);
         setTimeout(() => suggestionsRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+      }
+    });
+  };
+  
+  const handlePublishToYouTube = () => {
+    if (!video?.videoDataUri) return;
+
+    startPublishingTransition(async () => {
+      const result = await publishToYouTubeAction({
+        videoDataUri: video.videoDataUri,
+        ...videoMeta,
+      });
+      if (result.error) {
+        toast({
+          variant: 'destructive',
+          title: 'YouTube Publish Failed',
+          description: result.error,
+        });
+      } else if (result.data) {
+        toast({
+          title: 'Successfully Published to YouTube!',
+          description: `Your video is now available on YouTube with ID: ${result.data.videoId}`,
+        });
       }
     });
   };
@@ -182,8 +206,8 @@ export default function DashboardPage() {
                         {isSuggesting ? <Loader2 className="mr-2 animate-spin" /> : <Wand2 />}
                         Get AI Suggestions
                     </Button>
-                     <Button variant="destructive" className="w-full bg-red-600 hover:bg-red-700">
-                        <Youtube />
+                     <Button variant="destructive" className="w-full bg-red-600 hover:bg-red-700" onClick={handlePublishToYouTube} disabled={isPublishing}>
+                        {isPublishing ? <Loader2 className="mr-2 animate-spin" /> : <Youtube />}
                         Publish to YouTube
                     </Button>
                 </CardFooter>

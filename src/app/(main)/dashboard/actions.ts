@@ -2,6 +2,7 @@
 
 import { generateVideoFromText, GenerateVideoOutput } from '@/ai/flows/generate-video-from-text';
 import { suggestVideoImprovements, SuggestVideoImprovementsInput, SuggestVideoImprovementsOutput } from '@/ai/flows/suggest-video-improvements';
+import { uploadVideoToYouTube, YouTubeUploadInput } from '@/lib/youtube';
 import { z } from 'zod';
 
 const generateVideoSchema = z.object({
@@ -38,5 +39,18 @@ export async function suggestImprovementsAction(
   } catch (e: any) {
     console.error(e);
     return { error: e.message || 'Failed to get suggestions. Please try again.' };
+  }
+}
+
+
+export async function publishToYouTubeAction(
+  input: YouTubeUploadInput
+): Promise<{ error?: string; data?: { videoId: string } }> {
+  try {
+    const result = await uploadVideoToYouTube(input);
+    return { data: result };
+  } catch (e: any) {
+    console.error(e);
+    return { error: e.message || 'Failed to publish to YouTube. Please try again.' };
   }
 }
